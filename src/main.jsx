@@ -13,12 +13,19 @@ import 'react-toastify/dist/ReactToastify.css';
 import AuthProvider from './AuthProvider/AuthProvider.jsx';
 import Home from './pages/Home/Home.jsx';
 import Root from './layout/Root.jsx';
+import DashBoard from './layout/Dashboard.jsx';
 import Login from './pages/Login/Login.jsx';
 import Error from './pages/Error/Error.jsx';
 import OurMenu from './pages/OurMenu/OurMenu.jsx';
 import PrivateRoute from './PrivateRoute/PrivateRoute.jsx'
 import OurShop from './pages/OurShop/OurShop.jsx';
 import Register from './pages/Register/Register.jsx';
+import {
+  QueryClient,
+  QueryClientProvider,
+
+} from '@tanstack/react-query'
+import Cart from './pages/DashBoard/Cart/Cart.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -47,15 +54,31 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path: 'dashboard',
+    element: <DashBoard></DashBoard>,
+    children: [
+      {
+        path: 'cart',
+        element: <PrivateRoute><Cart></Cart></PrivateRoute>
+      }
+    ]
+  }
 ]);
+const queryClient = new QueryClient()
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
-      <div className='max-w-screen-xl	 mx-auto'>
-        <HelmetProvider>
-          <RouterProvider router={router} />
-        </HelmetProvider>
-      </div>
+      <QueryClientProvider client={queryClient}>
+        <div className='max-w-screen-xl	 mx-auto'>
+          <HelmetProvider>
+            <RouterProvider router={router} />
+          </HelmetProvider>
+        </div>
+      </QueryClientProvider>
+
+
 
     </AuthProvider>
 

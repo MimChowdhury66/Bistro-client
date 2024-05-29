@@ -2,10 +2,21 @@ import React, { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { AuthContext } from '../../AuthProvider/AuthProvider';
 import { Tooltip } from 'react-tooltip';
+import { FaCartPlus } from "react-icons/fa";
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 const Header = () => {
     const { logout, user } = useContext(AuthContext);
+    const { data: cart = [] } = useQuery({
+        queryKey: ['cart', user?.email],
+        queryFn: async () => {
+            const res = await axios.get(`http://localhost:5000/carts?email=${user.email}`)
+            return res.data;
 
+        }
+
+    })
     return (
         <div>
             <div className="navbar fixed z-30 max-w-screen-xl bg-opacity-35  bg-black">
@@ -23,6 +34,11 @@ const Header = () => {
                                         <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'font-bold text-blue-400' : 'font-bold'} >Dashboard</NavLink></li>
                                         <li><NavLink to="/menu" className={({ isActive }) => isActive ? 'font-bold text-blue-400' : 'font-bold'} >Our Menu</NavLink></li>
                                         <li><NavLink to="/shop/pizza" className={({ isActive }) => isActive ? 'font-bold text-blue-400' : 'font-bold'} >Our Shop</NavLink></li>
+                                        <li><NavLink to="/dashboard/cart" className={({ isActive }) => isActive ? 'font-bold text-blue-400' : 'font-bold'} ><button className="btn">
+                                            <FaCartPlus />
+
+                                            <div className="badge badge-secondary">+{cart.length}</div>
+                                        </button></NavLink></li>
                                         <li><button onClick={logout} className="btn lg:text-xl text-black  bg-blue-200 ">Logout</button> </li></>
                                     :
                                     <Link to='/login'><button className="btn lg:text-xl text-white  bg-blue-400 ">Log In</button></Link>
@@ -42,6 +58,11 @@ const Header = () => {
                                 <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'font-bold text-blue-400' : 'font-bold'} >Dashboard</NavLink></li>
                                 <li><NavLink to="/menu" className={({ isActive }) => isActive ? 'font-bold text-blue-400' : 'font-bold'} >Our Menu</NavLink></li>
                                 <li><NavLink to="/shop/pizza" className={({ isActive }) => isActive ? 'font-bold text-blue-400' : 'font-bold'} >Our Shop</NavLink></li>
+                                <li><NavLink to="/dashboard/cart" className={({ isActive }) => isActive ? 'font-bold text-blue-400' : 'font-bold'} ><button className="btn">
+                                    <FaCartPlus />
+
+                                    <div className="badge badge-secondary">+{cart.length}</div>
+                                </button></NavLink></li>
                                 <div data-tooltip-id="my-tooltip" data-tooltip-place="right" data-tooltip-content={user?.displayName || 'name not found'} className="dropdown dropdown-end  z-[4]" >
                                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar " >
                                         <div className="w-10 rounded-full "  >
